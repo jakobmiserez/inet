@@ -40,6 +40,7 @@
 #include "inet/networklayer/ipv6/Ipv6ExtensionHeaders_m.h"
 #include "inet/networklayer/ipv6/Ipv6ExtHeaderTag_m.h"
 #include "inet/networklayer/ipv6/Ipv6InterfaceData.h"
+#include "inet/networklayer/common/NextHopAddressTag_m.h"
 
 #ifdef WITH_xMIPv6
 #include "inet/networklayer/xmipv6/MobilityHeader_m.h"
@@ -271,8 +272,15 @@ void Ipv6::handleMessage(cMessage *msg)
                 datagramLocalOut(packet, destIE, nextHop.toIpv6());
         }
         else {
-            if (datagramPreRoutingHook(packet) == INetfilter::IHook::ACCEPT)
+            if (datagramPreRoutingHook(packet) == INetfilter::IHook::ACCEPT) {
+                NextHopAddressReq* nextHopReq = packet->findTag<NextHopAddressReq>();
+                InterfaceReq* interfaceReq = packet->findTag<InterfaceReq>();
+                if (nextHopReq != nullptr && interfaceReq != nullptr) {
+                    nextHop = nextHopReq->getNextHopAddress();
+                    destIE = ift->getInterfaceById(interfaceReq->getInterfaceId());
+                }
                 preroutingFinish(packet, fromIE, destIE, nextHop.toIpv6());
+            }
         }
     }
 }
