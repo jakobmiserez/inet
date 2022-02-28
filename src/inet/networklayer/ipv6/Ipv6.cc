@@ -41,6 +41,7 @@
 #include "inet/networklayer/ipv6/Ipv6ExtHeaderTag_m.h"
 #include "inet/networklayer/ipv6/Ipv6InterfaceData.h"
 #include "inet/networklayer/common/NextHopAddressTag_m.h"
+#include "inet/networklayer/common/FlowLabelTag_m.h"
 
 #ifdef WITH_xMIPv6
 #include "inet/networklayer/xmipv6/MobilityHeader_m.h"
@@ -790,6 +791,7 @@ void Ipv6::decapsulate(Packet *packet)
     l3AddressInd->setSrcAddress(ipv6Header->getSrcAddress());
     l3AddressInd->setDestAddress(ipv6Header->getDestAddress());
     packet->addTagIfAbsent<HopLimitInd>()->setHopLimit(ipv6Header->getHopLimit());
+    packet->addTagIfAbsent<FlowLabelInd>()->setFlowLabel(ipv6Header->getFlowLabel() & (uint32_t)0xfffff);
 }
 
 void Ipv6::encapsulate(Packet *transportPacket)
@@ -827,6 +829,10 @@ void Ipv6::encapsulate(Packet *transportPacket)
     if (EcnReq *ecnReq = transportPacket->removeTagIfPresent<EcnReq>()) {
         ipv6Header->setEcn(ecnReq->getExplicitCongestionNotification());
         delete ecnReq;
+    }
+    if (FlowLabelReq* flowLabelReq = transportPacket->removeTagIfPresent<FlowLabelReq>()) {
+        ipv6Header->setFlowLabel(flowLabelReq->getFlowLabel() & (uint32_t)0xfffff);
+        delete flowLabelReq;
     }
 
     ipv6Header->setHopLimit(ttl != -1 ? ttl : 32);    //FIXME use iface hop limit instead of 32?
