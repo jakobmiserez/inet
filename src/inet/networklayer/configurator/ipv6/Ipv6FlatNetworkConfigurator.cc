@@ -265,7 +265,7 @@ void Ipv6FlatNetworkConfigurator::addStaticRoutes(cTopology& topo)
             // add to route table
             for (auto & destPrefixe : destPrefixes) {
                 rt->addStaticRoute(destPrefixe->prefix, destPrefixe->prefixLength,
-                        localIf->getInterfaceId(), nextHopLinkLocalAddr, topo.getNode(j)->getPath(0)->getWeight()); // JAKOB EDIT
+                        localIf->getInterfaceId(), nextHopLinkLocalAddr, topo.getNode(j)->getDistanceToTarget()); // JAKOB EDIT
             }
         }
     }
