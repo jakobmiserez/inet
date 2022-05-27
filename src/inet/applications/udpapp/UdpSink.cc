@@ -100,7 +100,9 @@ void UdpSink::refreshDisplay() const
 void UdpSink::finish()
 {
     ApplicationBase::finish();
-    EV_INFO << getFullPath() << ": received " << numReceived << " packets\n";
+    recordScalar("numReceived", numReceived);
+    recordScalar("maxDelay", maxEndToEndDelay);
+    // EV_INFO << getFullPath() << ": received " << numReceived << " packets\n";
 }
 
 void UdpSink::setSocketOptions()
@@ -146,6 +148,12 @@ void UdpSink::processPacket(Packet *pk)
 {
     EV_INFO << "Received packet: " << UdpSocket::getReceivedPacketInfo(pk) << endl;
     emit(packetReceivedSignal, pk);
+
+    simtime_t delay = simTime() - pk->getCreationTime() ;
+    if (delay > maxEndToEndDelay) {
+        maxEndToEndDelay = delay;
+    }
+
     delete pk;
 
     numReceived++;

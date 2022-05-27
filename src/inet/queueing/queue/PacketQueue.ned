@@ -70,6 +70,6 @@ simple PacketQueue extends PacketQueueBase like IPacketQueue
         @statistic[packetPopped](title="packet popped"; record=count,sum(packetBytes),vector(packetBytes); interpolationmode=none);
         @statistic[packetRemoved](title="packets removed"; record=count,sum(packetBytes),vector(packetBytes); interpolationmode=none);
         @statistic[packetDropQueueOverflow](title="packet drops: queue overflow"; source=packetDropReasonIsQueueOverflow(packetDropped); record=count,sum(packetBytes),vector(packetBytes); interpolationmode=none);
-        @statistic[queueingTime](title="queueing times"; source=queueingTime(packetPopped); record=histogram,vector; unit=s; interpolationmode=none);
+        @statistic[queueingTime](title="queueing times"; source=queueingTime(packetPopped); record=max,mean,min,histogram,vector; unit=s; interpolationmode=none);
         @statistic[queueLength](title="queue length"; source=count(packetPushed) - count(packetPopped) - count(packetRemoved) - count(packetDropped); record=max,timeavg,vector; interpolationmode=sample-hold);
 }

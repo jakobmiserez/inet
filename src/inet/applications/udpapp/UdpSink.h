@@ -42,6 +42,8 @@ class INET_API UdpSink : public ApplicationBase, public UdpSocket::ICallback
     cMessage *selfMsg = nullptr;
     int numReceived = 0;
 
+    simtime_t maxEndToEndDelay = -1;
+
   public:
     UdpSink() {}
     virtual ~UdpSink();
