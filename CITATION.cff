@@ -1,0 +1,16 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Routing protocols exploiting queue information 
+  for deterministic networks - INET
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Jakob
+    family-names: Miserez
+    email: jakob.miserez@gmail.com
+url: "https://github.com/jakobmiserez/thesis"
